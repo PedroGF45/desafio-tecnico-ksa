@@ -22,6 +22,7 @@ services:
     container_name: ksa_backend
     restart: always
     environment:
+      - PYTHONPATH=/app
       - DATABASE_URL=${DATABASE_URL}
     ports:
       - "${BACKEND_PORT}:8000"
