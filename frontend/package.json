@@ -1,0 +1,9 @@
+{
+  "name": "ksa-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "mkdir -p dist && echo '<h1>KSA Ticket Flow - Frontend OK</h1>' > dist/index.html"
+  }
+}
