@@ -1,4 +1,20 @@
+/**
+ * Header component for KSA Ticket Management System.
+ *
+ * Displays the application branding, title, and user information.
+ * Includes links to external resources (KSA website, LinkedIn profile).
+ *
+ * @component
+ * @returns {JSX.Element} Header element with branding and navigation
+ *
+ * @example
+ *   <Header />
+ */
+
 import React from 'react';
+import { getLogger } from '../utils/logger';
+
+const logger = getLogger('Header');
 
 export default function Header() {
   return (
@@ -10,6 +26,7 @@ export default function Header() {
           target="_blank" 
           rel="noopener noreferrer"
           className="transition-transform duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-lg p-0.5"
+          onClick={() => logger.debug('Clicked KSA website link')}
         >
           <img
             src="/logo.jpg"
@@ -34,6 +51,7 @@ export default function Header() {
           target="_blank" 
           rel="noopener noreferrer"
           className="relative group transition-transform duration-200 hover:scale-105 focus:outline-none"
+          onClick={() => logger.debug('Clicked LinkedIn profile link')}
         >
           <img
             src="/foto.jpg"

@@ -1,12 +1,37 @@
+/**
+ * Sidebar component for ticket filtering and summary statistics.
+ *
+ * Provides multi-select filters for status, category, priority, and location.
+ * Includes a search input and ticket summary counters (New / In Progress / Resolved).
+ * Filter selections are persisted in parent component state.
+ *
+ * @component
+ * @param {Object} props - Component props
+ * @param {Object} props.filters - Current filter state {search, status, category, priority, location}
+ * @param {Function} props.setFilters - State setter for filters
+ * @param {Array} props.tickets - All tickets (used for calculating summary counters)
+ * @returns {JSX.Element} Sidebar with filters and summary
+ *
+ * @example
+ *   <Sidebar
+ *     filters={filters}
+ *     setFilters={setFilters}
+ *     tickets={tickets}
+ *   />
+ */
+
 import React from 'react';
+import { getLogger } from '../utils/logger';
 import { 
   TICKET_CATEGORIES, 
   TICKET_PRIORITIES, 
   TICKET_LOCATIONS 
 } from '../constants/ticketConstants';
 
+const logger = getLogger('Sidebar');
+
 export default function Sidebar({ filters, setFilters, tickets }) {
-  // Contadores para o resumo
+  // Calculate summary counters
   const totalNovos = tickets.filter(
     (t) => t.status === 'NEW' || t.status === 'Novo'
   ).length;
@@ -23,35 +48,77 @@ export default function Sidebar({ filters, setFilters, tickets }) {
     { value: 'CLOSED', label: 'Resolvido' },
   ];
 
-  // Função para alternar a seleção de uma opção num array
+  /**
+   * Toggle a value in a multi-select filter array.
+   *
+   * If the value is already selected, removes it. Otherwise, adds it.
+   * Updates parent component state via setFilters.
+   *
+   * @param {string} field - Filter field name (status, category, priority, location)
+   * @param {string} value - Value to toggle
+   * @returns {void}
+   */
   const toggleMultiSelect = (field, value) => {
-    setFilters((prev) => {
-      const currentSelections = prev[field];
-      const exists = currentSelections.includes(value);
+    try {
+      setFilters((prev) => {
+        const currentSelections = prev[field];
+        const exists = currentSelections.includes(value);
 
-      return {
-        ...prev,
-        [field]: exists
-          ? currentSelections.filter((item) => item !== value) // Remove se já existir
-          : [...currentSelections, value], // Adiciona se não existir
-      };
-    });
+        const newFilters = {
+          ...prev,
+          [field]: exists
+            ? currentSelections.filter((item) => item !== value) // Remove if already selected
+            : [...currentSelections, value], // Add if not selected
+        };
+
+        logger.debug(`Filter toggled: ${field}=${value}, active count: ${newFilters[field].length}`);
+        return newFilters;
+      });
+    } catch (error) {
+      logger.error('Error toggling filter', error);
+    }
   };
 
+  /**
+   * Handle search input changes.
+   *
+   * Updates the search filter field with the input value.
+   *
+   * @param {string} value - New search query
+   * @returns {void}
+   */
   const handleSearchChange = (value) => {
-    setFilters((prev) => ({ ...prev, search: value }));
+    try {
+      setFilters((prev) => ({ ...prev, search: value }));
+      logger.debug(`Search updated: "${value}"`);
+    } catch (error) {
+      logger.error('Error updating search filter', error);
+    }
   };
 
+  /**
+   * Reset all filters to their default (empty) state.
+   *
+   * Clears search, status, category, priority, and location filters.
+   *
+   * @returns {void}
+   */
   const resetFilters = () => {
-    setFilters({
-      search: '',
-      status: [],
-      category: [],
-      priority: [],
-      location: [],
-    });
+    try {
+      setFilters({
+        search: '',
+        status: [],
+        category: [],
+        priority: [],
+        location: [],
+      });
+      logger.info('All filters cleared');
+    } catch (error) {
+      logger.error('Error resetting filters', error);
+    }
   };
 
+  // Check if any filters are actively applied
   const hasActiveFilters =
     filters.search !== '' ||
     filters.status.length > 0 ||
