@@ -29,7 +29,7 @@ class CategoryEnum(str, enum.Enum):
     MAINTENANCE = "Manutenção"
     PURCHASES = "Compras"
     FINANCES = "Financeiro"
-    CUSTOMER_SERVICE = "Customer_Service"
+    CUSTOMER_SERVICE = "Customer Service"
     PRODUCTION = "Produção"
 
 
