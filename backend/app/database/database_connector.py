@@ -42,7 +42,6 @@ except Exception as e:
 # Create declarative base for ORM models
 Base = declarative_base()
 
-
 def get_db():
     """
     FastAPI dependency for injecting database sessions into route handlers.
